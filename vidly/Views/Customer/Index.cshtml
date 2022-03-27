@@ -1,0 +1,80 @@
+﻿@{
+    ViewBag.Title = "Customers";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Customers:</h2>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Customer Name</th>
+            <th>Membership Discount</th>
+            <th>Membership Types</th>
+            <th>Delete Customer</th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+@Html.ActionLink("Add Customer", "NewCustomer", "Customer", null, new { @class = "btn btn-primary" })
+
+@section scripts
+ {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script src="~/Scripts/jquery.dataTables.min.js"></script>
+    <script src="~/Scripts/dataTables.bootstrap4.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            var SelectTable = $('table');
+           var table= SelectTable.DataTable(
+                 {
+                     ajax: {
+                         url: "/api/customer",
+                         dataSrc: "",
+                     },
+                     columns: [
+                     {
+                         data: "customersName",
+                         render: function (data, type, customer) {
+                             return "<a href='/Customer/Details/" + customer.id + "'>" + customer.customersName + "</a>"
+                         }
+                     },
+                     { data: "memberShipTypeDto.discountRate" },
+                     { data: "memberShipTypeDto.memberShipCatagory" },
+                     {
+                         data: "id",
+                         render: function (data) {
+                             return "<button id=confirm value=" + data + " class='btn btn-link'>Delete</button>"
+                         }
+                     }
+                     ],
+
+                     "aLengthMenu": [[5, 10, 25, -1], [5, 10, 25, "All"]],
+                     "iDisplayLength": 5
+                 });
+           SelectTable.on("click", "#confirm", function () {
+               var button = $(this);
+               bootbox.confirm("Are You Want To Delete Entry. Note this is irreversible!", function (result) {
+                   if (result) {
+                       $.ajax({
+                           url: "/Api/Customer/" + button.val(),
+                           method: "Delete",
+                           success: function () {
+                               table.row(button.parents("tr")).remove().draw();
+
+                           }
+                       });
+                   }
+               });
+           });
+            function checkAll(bx) {
+                var cbs = document.getElementsByTagName('input');
+                for (var i = 0; i < cbs.length; i++) {
+                    if (cbs[i].type == 'checkbox') {
+                        cbs[i].checked = bx.checked;
+                    }
+                }
+            }
+        })
+    </script>
+}
+

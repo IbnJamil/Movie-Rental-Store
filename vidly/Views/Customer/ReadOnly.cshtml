@@ -1,0 +1,63 @@
+﻿
+@{
+    ViewBag.Title = "View";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Our Active Customers</h2>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Customer Name</th>
+            <th>Membership Discount</th>
+            <th>Membership Types</th>   
+        </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+@Html.ActionLink("Add Customer", "NewCustomer", "Customer", null, new { @class = "btn btn-primary" })
+
+@section scripts
+ {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script src="~/Scripts/jquery.dataTables.min.js"></script>
+    <script src="~/Scripts/dataTables.bootstrap4.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            var SelectTable = $('table');
+           var table= SelectTable.DataTable(
+                 {
+                     ajax: {
+                         url: "/api/customer",
+                         dataSrc: "",
+                     },
+                     columns: [
+                     {
+                         data: "customersName",
+                         render: function (data, type, customer) {
+                             return "<a href='/Customer/Details/" + customer.id + "'>" + customer.customersName + "</a>"
+                         }
+                     },
+                     { data: "memberShipTypeDto.discountRate" },
+                     { data: "memberShipTypeDto.memberShipCatagory" },                   
+                     ],
+
+                     "aLengthMenu": [[5, 10, 25, -1], [5, 10, 25, "All"]],
+                     "iDisplayLength": 5
+                 });      
+            function checkAll(bx) {
+                var cbs = document.getElementsByTagName('input');
+                for (var i = 0; i < cbs.length; i++) {
+                    if (cbs[i].type == 'checkbox') {
+                        cbs[i].checked = bx.checked;
+                    }
+                }
+            }
+        })
+    </script>
+}
+
+
+
+
+

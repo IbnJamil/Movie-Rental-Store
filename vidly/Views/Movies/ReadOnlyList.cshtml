@@ -1,0 +1,56 @@
+﻿
+@{
+    ViewBag.Title = "Movies";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Movies List</h2>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Movie</th>
+            <th>Genre</th>
+          
+        </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+@section scripts
+ {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script src="~/Scripts/jquery.dataTables.min.js"></script>
+    <script src="~/Scripts/dataTables.bootstrap4.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            var SelectTable = $('table');
+           var table= SelectTable.DataTable(
+                 {
+                     ajax: {
+                         url: "/api/movie",
+                         dataSrc: "",
+                     },
+                     columns: [
+                     {
+                       data: "moviesName"       },
+                     { data: "genreDto.genreName" }
+
+                     ],
+
+                     "aLengthMenu": [[5, 10, 25, -1], [5, 10, 25, "All"]],
+                     "iDisplayLength": 5
+                 });
+            function checkAll(bx) {
+                var cbs = document.getElementsByTagName('input');
+                for (var i = 0; i < cbs.length; i++) {
+                    if (cbs[i].type == 'checkbox') {
+                        cbs[i].checked = bx.checked;
+                    }
+                }
+            }
+        })
+    </script>
+}
+
+
+
+

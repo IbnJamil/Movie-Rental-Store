@@ -1,0 +1,22 @@
+﻿@model vidly.Models.ApplicationUser
+
+@{
+    ViewBag.Title = "AddRole";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>@Model.UserName</h2>
+    <ul>
+        <li>
+           Email:&emsp; @Html.DisplayFor(modelItem => Model.Email)
+        </li>
+        <li>
+            Name:&emsp; @Html.DisplayFor(modelItem => Model.UserName)
+        </li>
+        <li>
+            ZipCode:&emsp;  @Html.DisplayFor(modelItem => Model.ZipCode)
+        </li>
+        <li>
+            @Html.ActionLink("Add Role", "AddRole", new { id= Model.Id })
+        </li>
+    </ul>

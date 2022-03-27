@@ -1,0 +1,38 @@
+﻿@model vidly.Models.Movies
+@{
+    ViewBag.Title = "Detials";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<h2>Movie Detials</h2>
+<ul>
+    <li id="Name">Name:&emsp;<b>@Model.MoviesName</b></li>
+    <li id="DOB">Added On:&emsp;<b>@Model.DateAdded</b></li>
+    <li id="NumberInStock">Total Number of Copies Avialible:&emsp;<b>@Model.NumberInStock</b></li>
+    <li id="Genre">Genre:&emsp;<b>@Model.Genre.GenreName</b></li>
+    <li id="Genre">Currently Avialible?:&emsp;<b>@Model.Aviliability</b></li>
+</ul>
+@section scripts{
+    <script>
+        $(document).ready(function () {
+            var xhttp = new XMLHttpRequest();
+            var ur = window.location.href;
+            var id = ur.substring(ur.lastIndexOf("/") + 1);
+            xhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    var dataStore = this.responseText;
+                    dataStore = JSON.parse(dataStore);
+                    var nameNode = document.createTextNode(dataStore.moviesName)
+                    dataStore.dateAdded = new Date(dataStore.dateAdded);
+                    dataStore.dateAdded = dataStore.dateAdded.toDateString();
+                    var FeeNode = document.createTextNode(dataStore.numberInStock);
+                    var DobTxtNode = document.createTextNode(dataStore.dateAdded);
+                    document.getElementById("Name").appendChild(nameNode);
+                    document.getElementById("DOB").appendChild(DobTxtNode);
+                    document.getElementById("NumberInStock").appendChild(FeeNode);
+                }
+            };
+            xhttp.open("GET", "http://localhost:51377/api/movie/" + id + "", true);
+            xhttp.send();
+        })
+    </script>
+}

@@ -1,0 +1,83 @@
+﻿
+@{
+    ViewBag.Title = "Movies";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Movies List</h2>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Movie</th>
+            <th>Genre</th>
+            <th>Delete</th>
+          
+        </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+@Html.ActionLink("Add Movie", "AddMovie", "Movies", new { @class = "btn btn-primary" })
+@section scripts
+ {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script src="~/Scripts/jquery.dataTables.min.js"></script>
+    <script src="~/Scripts/dataTables.bootstrap4.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            var SelectTable = $('table');
+           var table= SelectTable.DataTable(
+                 {
+                     ajax: {
+                         url: "/api/movie",
+                         dataSrc: "",
+                     },
+                     columns: [
+                     {
+                         data: "moviesName",
+                         render: function (data, type, movie) {
+                             return "<a href='/Movies/Details/" + movie.id + "'>" + movie.moviesName + "</a>"
+                         }
+                     },
+                     { data: "genreDto.genreName" },
+                     {
+                         data: "id",
+                         render: function (data) {
+                             return "<button id=confirm value=" + data + " class='btn btn-link'>Delete</button>"
+                         }
+                     }
+                     ],
+
+                     "aLengthMenu": [[5, 10, 25, -1], [5, 10, 25, "All"]],
+                     "iDisplayLength": 5
+                 });
+            SelectTable.on("click", "#confirm", function () {
+                var button = $(this);
+                bootbox.confirm("Are You Want To Delete Entry. Note this is irreversible!", function (result) {
+                    if(result)
+                    {
+                        $.ajax({
+                            url: "/Api/Movie/" + button.val(),
+                            method: "Delete",
+                            success: function () {
+                                table.row(button.parents("tr")).remove().draw();
+
+                            }
+                        });
+                    }
+                })
+            });
+            function checkAll(bx) {
+                var cbs = document.getElementsByTagName('input');
+                for (var i = 0; i < cbs.length; i++) {
+                    if (cbs[i].type == 'checkbox') {
+                        cbs[i].checked = bx.checked;
+                    }
+                }
+            }
+        })
+    </script>
+}
+
+
+
+
